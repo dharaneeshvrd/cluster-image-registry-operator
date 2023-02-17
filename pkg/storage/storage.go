@@ -3,6 +3,7 @@ package storage
 import (
 	"context"
 	"fmt"
+	"k8s.io/klog/v2"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/rest"
@@ -167,6 +168,8 @@ func NewDriver(cfg *imageregistryv1.ImageRegistryConfigStorage, kubeconfig *rest
 //     in new platforms, if it is LibVirt platform we also return EmptyDir for
 //     historical reasons.
 func GetPlatformStorage(listers *regopclient.StorageListers) (imageregistryv1.ImageRegistryConfigStorage, int32, error) {
+	fmt.Println("In GetPlatformStorage")
+	klog.Infof("In GetPlatformStorage")
 	var cfg imageregistryv1.ImageRegistryConfigStorage
 	replicas := int32(1)
 
@@ -174,6 +177,9 @@ func GetPlatformStorage(listers *regopclient.StorageListers) (imageregistryv1.Im
 	if err != nil {
 		return imageregistryv1.ImageRegistryConfigStorage{}, replicas, err
 	}
+
+	fmt.Println(infra)
+	klog.Infof("Infra returned: %v", infra)
 
 	switch infra.Status.PlatformStatus.Type {
 
@@ -184,8 +190,7 @@ func GetPlatformStorage(listers *regopclient.StorageListers) (imageregistryv1.Im
 		configapiv1.NonePlatformType,
 		configapiv1.NutanixPlatformType,
 		configapiv1.KubevirtPlatformType,
-		configapiv1.EquinixMetalPlatformType,
-		configapiv1.PowerVSPlatformType:
+		configapiv1.EquinixMetalPlatformType:
 		break
 
 	// These are the supported platforms. We do have backend implementation
@@ -200,6 +205,7 @@ func GetPlatformStorage(listers *regopclient.StorageListers) (imageregistryv1.Im
 		cfg.GCS = &imageregistryv1.ImageRegistryConfigStorageGCS{}
 		replicas = 2
 	case configapiv1.IBMCloudPlatformType:
+	case configapiv1.PowerVSPlatformType:
 		cfg.IBMCOS = &imageregistryv1.ImageRegistryConfigStorageIBMCOS{}
 		replicas = 2
 	case configapiv1.OpenStackPlatformType:
@@ -229,5 +235,7 @@ func GetPlatformStorage(listers *regopclient.StorageListers) (imageregistryv1.Im
 		replicas = 1
 	}
 
+	fmt.Printf("return from getStorage: %v", cfg)
+	klog.Infof("return from getPlatfromStorage: %v", cfg)
 	return cfg, replicas, nil
 }

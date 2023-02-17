@@ -4,7 +4,7 @@ all: build
 update: update-codegen-crds
 
 RUNTIME ?= podman
-RUNTIME_IMAGE_NAME ?= registry.ci.openshift.org/openshift/release:rhel-8-release-golang-1.18-openshift-4.12
+RUNTIME_IMAGE_NAME ?= registry.ci.openshift.org/openshift/release:rhel-8-release-golang-1.19-openshift-4.13
 
 EXCLUDE_DIRS := _output/ dependencymagnet/ hack/ third_party/ tls/ tools/ vendor/ tests/
 GO_PACKAGES :=$(addsuffix ...,$(addprefix ./,$(filter-out $(EXCLUDE_DIRS), $(wildcard */))))
@@ -53,11 +53,8 @@ verify-scripts:
 verify: verify-scripts verify-codegen-crds
 
 .PHONY: verify-codegen-crds
-verify-codegen-crds: verify-update-codegen-crds
-
-.PHONY: verify-codegen-%
-verify-codegen-%:
-	make verify-update-codegen-$*
+verify-codegen-crds:
+	bash -x hack/verify-codegen-crds.sh
 
 .PHONY: verify-%
 verify-%:
