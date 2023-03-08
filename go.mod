@@ -117,6 +117,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pkg/profile v1.3.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/ppc64le-cloud/powervs-utils v0.0.0-20230306072409-bc42a581099f // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/satori/go.uuid v1.2.0 // indirect
